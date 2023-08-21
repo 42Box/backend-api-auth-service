@@ -27,10 +27,10 @@ public class OAuth2ClientConfig {
 
   @Bean
   SecurityFilterChain oauth2SecurityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeRequests().anyRequest().authenticated();
-//    http.authorizeRequests()
-//        .antMatchers("/oauth2/authorization/42api", "/login/oauth2/code/42api").permitAll()
-//        .anyRequest().denyAll();
+//    http.authorizeRequests().anyRequest().authenticated();
+    http.authorizeRequests()
+        .antMatchers("/oauth2/authorization/42api", "/login/oauth2/code/42api").permitAll()
+        .anyRequest().denyAll();
     http.oauth2Login().successHandler(oauth2LoginSuccessHandler);
     http.oauth2Login().failureHandler(oauth2LoginFailureHandler);
     http.formLogin().disable().httpBasic().disable().csrf().disable();
