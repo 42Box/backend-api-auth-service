@@ -18,7 +18,7 @@ public class Oauth2LoginFailureHandler implements AuthenticationFailureHandler {
 
   @Override
   public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-    AuthenticationException exception) throws IOException, ServletException {
+      AuthenticationException exception) throws IOException, ServletException {
     String serverCheckedErrorKey = envUtil.getEnv("header.server-checked-error.key");
     String serverCheckedErrorValue = envUtil.getEnv("header.server-checked-error.value");
     response.setStatus(503);
