@@ -24,17 +24,17 @@ public class Oauth42UserService implements OAuth2UserService<OAuth2UserRequest, 
       OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
       Map<String, Object> mutableAttributes = new HashMap<>(oAuth2User.getAttributes());
       Map<String, Object> user_info = signUp(clientRegistration, oAuth2User).orElseThrow(
-        RuntimeException::new);
+          RuntimeException::new);
       mutableAttributes.put("user-info", user_info);
       return new DefaultOAuth2User(oAuth2User.getAuthorities(), mutableAttributes,
-        clientRegistration.getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName());
+          clientRegistration.getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName());
     } catch (Exception e) {
       throw new OAuth2AuthenticationException("Registration failed");
     }
   }
 
   private Optional<Map<String, Object>> signUp(ClientRegistration clientRegistration,
-    OAuth2User oAuth2User) {
+      OAuth2User oAuth2User) {
     String registrationId = clientRegistration.getRegistrationId();
     if (registrationId.equals("42api")) {
       return dummy42Result(oAuth2User);

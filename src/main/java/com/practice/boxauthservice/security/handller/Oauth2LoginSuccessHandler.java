@@ -25,7 +25,7 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-    Authentication authentication) throws IOException, ServletException {
+      Authentication authentication) throws IOException, ServletException {
     try {
       OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
       Map<String, Object> userInfo = parseUserInfo(oAuth2User);
@@ -58,7 +58,7 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
   }
 
   private void parseResponse(HttpServletResponse response, Cookie jwtCookie, String jwtToken,
-    Map<String, Object> userInfo) throws IOException {
+      Map<String, Object> userInfo) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper();
     String json = objectMapper.writeValueAsString(userInfo);
     response.addCookie(jwtCookie);

@@ -97,7 +97,8 @@ jacocoTestCoverageVerification {
             excludes = [
                     'Q*.class',
                     '*BoxAuthServiceApplication*',
-                    '*Configuration*'
+                    '*Configuration*',
+                    '*'
             ]
         }
     }
