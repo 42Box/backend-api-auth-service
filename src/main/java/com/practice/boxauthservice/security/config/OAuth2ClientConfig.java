@@ -8,6 +8,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 public class OAuth2ClientConfig {
@@ -17,7 +20,7 @@ public class OAuth2ClientConfig {
 
   @Autowired
   public OAuth2ClientConfig(Oauth2LoginSuccessHandler oauth2LoginSuccessHandler,
-    Oauth2LoginFailureHandler oauth2LoginFailureHandler) {
+      Oauth2LoginFailureHandler oauth2LoginFailureHandler) {
     this.oauth2LoginSuccessHandler = oauth2LoginSuccessHandler;
     this.oauth2LoginFailureHandler = oauth2LoginFailureHandler;
   }
@@ -30,5 +33,19 @@ public class OAuth2ClientConfig {
     http.formLogin().disable().httpBasic().disable().csrf().disable();
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     return http.build();
+  }
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.addAllowedOrigin("https://www.42box.kr");
+    configuration.addAllowedOrigin("https://api.42box.site");
+    configuration.addAllowedMethod("*");
+    configuration.addAllowedHeader("*");
+    configuration.setAllowCredentials(true);
+    configuration.setMaxAge(1L);
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
   }
 }
