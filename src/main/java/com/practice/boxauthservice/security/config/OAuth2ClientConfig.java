@@ -2,6 +2,7 @@ package com.practice.boxauthservice.security.config;
 
 import com.practice.boxauthservice.security.handller.Oauth2LoginFailureHandler;
 import com.practice.boxauthservice.security.handller.Oauth2LoginSuccessHandler;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,6 +26,9 @@ public class OAuth2ClientConfig {
 
   @Bean
   SecurityFilterChain oauth2SecurityFilterChain(HttpSecurity http) throws Exception {
+    http.exceptionHandling()
+        .authenticationEntryPoint((request, response, authException) -> response.sendError(
+            HttpServletResponse.SC_FORBIDDEN));
     http.authorizeRequests().anyRequest().authenticated();
     http.oauth2Login().successHandler(oauth2LoginSuccessHandler);
     http.oauth2Login().failureHandler(oauth2LoginFailureHandler);
