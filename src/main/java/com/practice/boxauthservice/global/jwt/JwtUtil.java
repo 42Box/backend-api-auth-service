@@ -19,6 +19,6 @@ public class JwtUtil {
     String secret = envUtil.getEnv("jwt.token.ACCESS_SECRET");
 
     return JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
-        .withClaim("userId", nickname).sign(Algorithm.HMAC512(Objects.requireNonNull(secret)));
+        .withClaim("nickname", nickname).sign(Algorithm.HMAC512(Objects.requireNonNull(secret)));
   }
 }

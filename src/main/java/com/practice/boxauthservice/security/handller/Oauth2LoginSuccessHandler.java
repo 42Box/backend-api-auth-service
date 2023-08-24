@@ -49,7 +49,7 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
   }
 
   private Cookie generateJwtCookie(String jwtToken) {
-    Cookie jwtCookie = new Cookie("box-jwt", jwtToken);
+    Cookie jwtCookie = new Cookie(envUtil.getEnv("jwt.token.AUTH_TOKEN_NAME"), jwtToken);
     int cookieAge = Integer.parseInt(envUtil.getEnv("jwt.token.ACCESS_EXPIRATION_TIME")) / 1000;
     jwtCookie.setHttpOnly(true);
     jwtCookie.setMaxAge(cookieAge);
