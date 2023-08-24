@@ -14,11 +14,11 @@ public class JwtUtil {
 
   private final EnvUtil envUtil;
 
-  public String generateAccessJwtToken(Long userId) {
+  public String generateAccessJwtToken(String nickname) {
     int expirationTime = Integer.parseInt(envUtil.getEnv("jwt.token.ACCESS_EXPIRATION_TIME"));
     String secret = envUtil.getEnv("jwt.token.ACCESS_SECRET");
 
     return JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
-      .withClaim("userId", userId).sign(Algorithm.HMAC512(Objects.requireNonNull(secret)));
+        .withClaim("userId", nickname).sign(Algorithm.HMAC512(Objects.requireNonNull(secret)));
   }
 }

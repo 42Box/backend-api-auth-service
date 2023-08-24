@@ -19,13 +19,21 @@ public class Oauth2LoginFailureHandler implements AuthenticationFailureHandler {
   @Override
   public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
     AuthenticationException exception) throws IOException, ServletException {
-    String serverCheckedErrorKey = envUtil.getEnv("header.server-checked-error.key");
-    String serverCheckedErrorValue = envUtil.getEnv("header.server-checked-error.value");
-    response.setStatus(503);
-    response.setHeader(serverCheckedErrorKey, serverCheckedErrorValue);
-    response.setContentType("application/json");
-    response.setCharacterEncoding("UTF-8");
-    response.resetBuffer();
-    response.getWriter().write("{\"msg\":\"Service Not Available!\", \"code\": -1}");
+    try {
+      String serverCheckedErrorKey = envUtil.getEnv("header.server-checked-error.key");
+      String serverCheckedErrorValue = envUtil.getEnv("header.server-checked-error.value");
+      response.setStatus(503);
+      response.setHeader(serverCheckedErrorKey, serverCheckedErrorValue);
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.resetBuffer();
+      response.getWriter().write("{\"msg\":\"Service Not Available!\", \"code\": -1}");
+    } catch (Exception e) {
+      response.setStatus(503);
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.resetBuffer();
+      response.getWriter().write("{\"msg\":\"Service Something Wrong!\", \"code\": -1}");
+    }
   }
 }
