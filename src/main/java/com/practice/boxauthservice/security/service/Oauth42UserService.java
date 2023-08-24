@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -80,11 +81,14 @@ public class Oauth42UserService implements OAuth2UserService<OAuth2UserRequest, 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
-
-    ResponseEntity<String> response = restTemplate.postForEntity(endpoint, requestEntity,
-        String.class);
-    if (response.getStatusCode() != HttpStatus.CREATED
-        && response.getStatusCode() != HttpStatus.CONFLICT) {
+    try {
+      ResponseEntity<String> response = restTemplate.postForEntity(endpoint, requestEntity,
+          String.class);
+    } catch (HttpClientErrorException e) {
+      if (e.getStatusCode() != HttpStatus.CONFLICT) {
+        throw new OAuth2AuthenticationException("Registration failed");
+      }
+    } catch (Exception e) {
       throw new OAuth2AuthenticationException("Registration failed");
     }
   }
