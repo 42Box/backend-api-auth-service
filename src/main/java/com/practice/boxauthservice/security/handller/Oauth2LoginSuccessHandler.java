@@ -28,12 +28,28 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
       Authentication authentication) throws IOException, ServletException {
     try {
       String nickname = getNickname(authentication);
-      String jwtToken = jwtUtil.generateAccessJwtToken(nickname);
+      String uuid = getUuid(authentication);
+      String role = getRole(authentication);
+      String jwtToken = jwtUtil.generateAccessJwtToken(nickname, uuid, role);
       Cookie jwtCookie = generateJwtCookie(jwtToken);
       parseResponse(response, jwtCookie);
     } catch (Exception e) {
       throw new OAuth2AuthenticationException("Authentication failed");
     }
+  }
+
+  private String getUuid(Authentication authentication) {
+    OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+    Map<String, Object> userInfo = (Map<String, Object>) oAuth2User.getAttributes()
+        .get("user-info");
+    return String.valueOf(userInfo.get("uuid"));
+  }
+
+  private String getRole(Authentication authentication) {
+    OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+    Map<String, Object> userInfo = (Map<String, Object>) oAuth2User.getAttributes()
+        .get("user-info");
+    return String.valueOf(userInfo.get("role"));
   }
 
   private String getNickname(Authentication authentication) {
