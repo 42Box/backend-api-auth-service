@@ -68,6 +68,7 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     jwtCookie.setMaxAge(cookieAge);
     jwtCookie.setSecure(true);
     jwtCookie.setPath("/");
+    jwtCookie.setDomain(".42box.site");
     return jwtCookie;
   }
 
