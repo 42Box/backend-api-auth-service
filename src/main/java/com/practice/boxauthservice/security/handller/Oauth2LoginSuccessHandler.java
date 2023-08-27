@@ -3,12 +3,15 @@ package com.practice.boxauthservice.security.handller;
 import com.practice.boxauthservice.global.env.EnvUtil;
 import com.practice.boxauthservice.global.jwt.JwtUtil;
 import java.io.IOException;
+import java.net.HttpCookie;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -35,7 +38,7 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
       String jwtToken = jwtUtil.generateAccessJwtToken(nickname, uuid, role, profileImagePath,
           profileImageUrl);
-      Cookie jwtCookie = generateJwtCookie(jwtToken);
+      ResponseCookie jwtCookie = generateJwtCookie(jwtToken);
       parseResponse(response, jwtCookie);
     } catch (Exception e) {
       throw new OAuth2AuthenticationException("Authentication failed");
@@ -61,20 +64,34 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     }
   }
 
-  private Cookie generateJwtCookie(String jwtToken) {
-    Cookie jwtCookie = new Cookie(envUtil.getEnv("jwt.token.AUTH_TOKEN_NAME"), jwtToken);
-    int cookieAge = Integer.parseInt(envUtil.getEnv("jwt.token.ACCESS_EXPIRATION_TIME")) / 1000;
-    jwtCookie.setHttpOnly(true);
-    jwtCookie.setMaxAge(cookieAge);
-    jwtCookie.setSecure(true);
-    jwtCookie.setPath("/");
+  private ResponseCookie generateJwtCookie(String jwtToken) {
+    ResponseCookie jwtCookie = ResponseCookie.from(envUtil.getEnv("jwt.token.AUTH_TOKEN_NAME"),
+            jwtToken)
+        .maxAge(Integer.parseInt(envUtil.getEnv("jwt.token.ACCESS_EXPIRATION_TIME")) / 1000)
+        .httpOnly(true)
+        .path("/")
+        .secure(true)
+        .sameSite("None")
+        .build();
     return jwtCookie;
   }
 
-  private void parseResponse(HttpServletResponse response, Cookie jwtCookie) throws IOException {
+//  private Cookie generateJwtCookie(String jwtToken) {
+//    Cookie jwtCookie = new Cookie(envUtil.getEnv("jwt.token.AUTH_TOKEN_NAME"), jwtToken);
+//    int cookieAge = Integer.parseInt(envUtil.getEnv("jwt.token.ACCESS_EXPIRATION_TIME")) / 1000;
+//    jwtCookie.setHttpOnly(true);
+//    jwtCookie.setMaxAge(cookieAge);
+//    jwtCookie.setSecure(true);
+//    jwtCookie.setPath("/");
+//    return jwtCookie;
+//  }
+
+  private void parseResponse(HttpServletResponse response, ResponseCookie jwtCookie)
+      throws IOException {
     response.setStatus(302);
     response.setHeader("Location", envUtil.getEnv("header.auth-redirect-location.value"));
-    response.addCookie(jwtCookie);
+    response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
+//    response.addCookie(jwtCookie);
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.resetBuffer();
