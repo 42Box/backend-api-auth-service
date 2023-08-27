@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -38,13 +37,20 @@ public class Oauth42UserService implements OAuth2UserService<OAuth2UserRequest, 
       PostUsersResponseDto resultDto = signUp(clientRegistration, oAuth2User);
       String uuid = resultDto.getUuid();
       String role = resultDto.getRole();
-      if (uuid == null || role == null) {
+      String profileImagePath = resultDto.getProfileImagePath();
+      String profileImageUrl = resultDto.getProfileImageUrl();
+      if (uuid == null || uuid.isEmpty()
+          || role == null || role.isEmpty()
+          || profileImagePath == null || profileImagePath.isEmpty()
+          || profileImageUrl == null || profileImageUrl.isEmpty()) {
         throw new OAuth2AuthenticationException("Registration failed");
       }
       Map<String, Object> mutableAttributes = new HashMap<>(oAuth2User.getAttributes());
       Map<String, Object> userInfo = new HashMap<>();
       userInfo.put("uuid", uuid);
       userInfo.put("role", role);
+      userInfo.put("profileImagePath", profileImagePath);
+      userInfo.put("profileImageUrl", profileImageUrl);
       mutableAttributes.put("user-info", userInfo);
       return new DefaultOAuth2User(oAuth2User.getAuthorities(), mutableAttributes,
           clientRegistration.getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName());

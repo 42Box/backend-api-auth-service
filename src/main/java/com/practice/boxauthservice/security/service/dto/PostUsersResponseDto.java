@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
  * PostUsersResponseDto.
  *
  * @author : middlefitting
- * @description :
  * @since : 2023/08/25
  */
 @AllArgsConstructor
@@ -18,4 +17,6 @@ public class PostUsersResponseDto {
 
   String role;
   String uuid;
+  String profileImagePath;
+  String profileImageUrl;
 }
