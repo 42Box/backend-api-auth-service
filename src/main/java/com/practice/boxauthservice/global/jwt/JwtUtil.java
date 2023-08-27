@@ -14,13 +14,17 @@ public class JwtUtil {
 
   private final EnvUtil envUtil;
 
-  public String generateAccessJwtToken(String nickname, String uuid, String role) {
+  public String generateAccessJwtToken(String nickname, String uuid, String role,
+      String profileImagePath, String profileImageUrl) {
     int expirationTime = Integer.parseInt(envUtil.getEnv("jwt.token.ACCESS_EXPIRATION_TIME"));
     String secret = envUtil.getEnv("jwt.token.ACCESS_SECRET");
 
     return JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
         .withClaim("uuid", uuid)
         .withClaim("role", role)
-        .withClaim("nickname", nickname).sign(Algorithm.HMAC512(Objects.requireNonNull(secret)));
+        .withClaim("nickname", nickname)
+        .withClaim("profileImagePath", profileImagePath)
+        .withClaim("profileImageUrl", profileImageUrl)
+        .sign(Algorithm.HMAC512(Objects.requireNonNull(secret)));
   }
 }
