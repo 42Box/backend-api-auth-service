@@ -71,20 +71,10 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         .httpOnly(true)
         .path("/")
         .secure(true)
-        .sameSite("None")
+        .sameSite("Lax")
         .build();
     return jwtCookie;
   }
-
-//  private Cookie generateJwtCookie(String jwtToken) {
-//    Cookie jwtCookie = new Cookie(envUtil.getEnv("jwt.token.AUTH_TOKEN_NAME"), jwtToken);
-//    int cookieAge = Integer.parseInt(envUtil.getEnv("jwt.token.ACCESS_EXPIRATION_TIME")) / 1000;
-//    jwtCookie.setHttpOnly(true);
-//    jwtCookie.setMaxAge(cookieAge);
-//    jwtCookie.setSecure(true);
-//    jwtCookie.setPath("/");
-//    return jwtCookie;
-//  }
 
   private void parseResponse(HttpServletResponse response, ResponseCookie jwtCookie, String jwt)
       throws IOException {
