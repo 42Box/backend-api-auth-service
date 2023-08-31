@@ -72,6 +72,7 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         .path("/")
         .secure(true)
         .sameSite("None")
+        .domain(envUtil.getEnv("domain.value"))
         .build();
     return jwtCookie;
   }
