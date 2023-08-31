@@ -70,7 +70,6 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         .maxAge(Integer.parseInt(envUtil.getEnv("jwt.token.ACCESS_EXPIRATION_TIME")) / 1000)
         .httpOnly(true)
         .path("/")
-        .domain(envUtil.getEnv("domain.value"))
         .secure(true)
         .sameSite("Lax")
         .build();
