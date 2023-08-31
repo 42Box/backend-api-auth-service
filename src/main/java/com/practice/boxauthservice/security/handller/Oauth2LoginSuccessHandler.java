@@ -39,7 +39,7 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
       String jwtToken = jwtUtil.generateAccessJwtToken(nickname, uuid, role, profileImagePath,
           profileImageUrl);
       ResponseCookie jwtCookie = generateJwtCookie(jwtToken);
-      parseResponse(response, jwtCookie);
+      parseResponse(response, jwtCookie, jwtToken);
     } catch (Exception e) {
       throw new OAuth2AuthenticationException("Authentication failed");
     }
@@ -86,12 +86,12 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 //    return jwtCookie;
 //  }
 
-  private void parseResponse(HttpServletResponse response, ResponseCookie jwtCookie)
+  private void parseResponse(HttpServletResponse response, ResponseCookie jwtCookie, String jwt)
       throws IOException {
     response.setStatus(302);
+    response.setHeader("Authorization", envUtil.getEnv("jwt.token.TOKEN_PREFIX") + " " + jwt);
     response.setHeader("Location", envUtil.getEnv("header.auth-redirect-location.value"));
     response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
-//    response.addCookie(jwtCookie);
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.resetBuffer();
